@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>To-Do</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-input [(ngModel)]="newTask" placeholder="Nueva tarea"></ion-input>
+    <ion-button (click)="addTask()">+</ion-button>
+  </ion-item>
+
+  <ion-list>
+    <ion-item *ngFor="let task of tasks$ | async; trackBy: trackById">
+      <ion-checkbox slot="start" [checked]="task.completed"
+        (ionChange)="tasksService.toggleTask(task.id)">
+      </ion-checkbox>
+      <ion-label [class.completed]="task.completed">
+        {{ task.title }}
+      </ion-label>
+      <ion-button fill="clear" color="danger"
+        (click)="tasksService.deleteTask(task.id)">
+        🗑️
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

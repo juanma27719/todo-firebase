@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { StorageService } from './core/services/storage';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +8,11 @@ import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
   imports: [IonApp, IonRouterOutlet],
 })
 export class AppComponent {
-  constructor() {}
+
+  private storage = inject(StorageService);
+
+  constructor() {
+    this.storage.init();
+  }
+
 }
