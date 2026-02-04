@@ -1,27 +1,57 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>To-Do</ion-title>
+    <ion-buttons slot="end">
+      <ion-button id="open-modal-category" (click)="openModalCategories()">Categorías</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
+
+  <!-- Nueva tarea -->
   <ion-item>
-    <ion-input [(ngModel)]="newTask" placeholder="Nueva tarea"></ion-input>
-    <ion-button (click)="addTask()">+</ion-button>
+    <ion-input [(ngModel)]="newTask" placeholder="Nueva tarea">
+    </ion-input>
   </ion-item>
 
+  <!-- Categoría -->
+  <ion-item>
+    <ion-select placeholder="Categoría" [(ngModel)]="selectedCategory">
+      <ion-select-option *ngFor="let c of categories$ | async" [value]="c.id">
+        {{ c.name }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-button expand="block" (click)="addTask()" [disabled]="!newTask.trim() || !selectedCategory">
+    Agregar tarea
+  </ion-button>
+
+  <!-- Filtro -->
+  <ion-segment [(ngModel)]="filterCategory">
+    <ion-segment-button value="">
+      Todas
+    </ion-segment-button>
+    <ion-segment-button *ngFor="let c of categories$ | async" [value]="c.id">
+      {{ c.name }}
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Lista -->
   <ion-list>
-    <ion-item *ngFor="let task of tasks$ | async; trackBy: trackById">
-      <ion-checkbox slot="start" [checked]="task.completed"
-        (ionChange)="tasksService.toggleTask(task.id)">
+    <ion-item *ngFor="let task of filteredTasks$ | async; trackBy: trackById">
+      <ion-checkbox slot="start" [checked]="task.completed" (ionChange)="toggleTask(task.id)">
       </ion-checkbox>
+
       <ion-label [class.completed]="task.completed">
-        {{ task.title }}
+        {{ task.title }} - {{task.categoryId}}
       </ion-label>
-      <ion-button fill="clear" color="danger"
-        (click)="tasksService.deleteTask(task.id)">
-        🗑️
+
+      <ion-button fill="clear" color="danger" (click)="deleteTask(task.id)">
+        Eliminar
       </ion-button>
     </ion-item>
   </ion-list>
+
 </ion-content>

@@ -1,13 +1,35 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>categories</ion-title>
+    <ion-title>Categorías</ion-title>
+    <ion-buttons slot="end">
+      <ion-button id="open-modal-category" (click)="dismiss()">Cancelar</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">categories</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+
+  <!-- Nueva categoría -->
+  <ion-item>
+    <ion-input [(ngModel)]="newCategory" placeholder="Nueva categoría">
+    </ion-input>
+  </ion-item>
+
+  <ion-button expand="block" (click)="addCategory()" [disabled]="!newCategory">
+    Agregar Categoría
+  </ion-button>
+
+  <!-- Lista Categorias -->
+  <ion-list>
+    @for (c of categories$ | async; track c.id) {
+    <ion-item>
+      <ion-label>{{ c.name }}</ion-label>
+
+      <ion-button fill="clear" color="danger" (click)="deleteCategory(c.id)">
+        Eliminar
+      </ion-button>
+    </ion-item>
+    }
+  </ion-list>
+
 </ion-content>
