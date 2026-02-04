@@ -28,8 +28,8 @@ import {
   IonModal
 } from '@ionic/angular/standalone';
 
-import { TasksService } from '../../core/services/tasks';
-import { CategoriesService } from '../../core/services/categories';
+import { TasksService } from '../../core/services/tasks/tasks-service';
+import { CategoriesService } from '../../core/services/categories/categories-service';
 import { CategoriesPage } from '../categories/categories.page';
 import { TaskModel } from '../../core/models/task.model';
 

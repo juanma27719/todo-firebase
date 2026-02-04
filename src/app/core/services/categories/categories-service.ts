@@ -1,13 +1,15 @@
 import { Injectable, signal } from '@angular/core';
 import { nanoid } from 'nanoid';
 
-import { CategoryModel } from '../models/category.model';
-import { StorageService } from './storage';
-import { TasksService } from './tasks';
+import { CategoryModel } from '../../models/category.model';
+import { StorageService } from '../storage/storage-service';
+import { TasksService } from '../tasks/tasks-service';
 
 const CATEGORIES_KEY = 'categories';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class CategoriesService {
 
   private _categories = signal<CategoryModel[]>([]);
@@ -54,5 +56,6 @@ export class CategoriesService {
       await this.tasksService.updateTasksCategory(id, data.id);
     }
   }
+
 
 }

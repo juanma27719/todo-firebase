@@ -20,10 +20,10 @@ import {
   IonModal
 } from '@ionic/angular/standalone';
 
-import { CategoriesService } from '../../core/services/categories';
 import { addIcons } from 'ionicons';
 import { createOutline, trash } from 'ionicons/icons';
 import { CategoryModel } from '../../core/models/category.model';
+import { CategoriesService } from '../../core/services/categories/categories-service';
 
 @Component({
   selector: 'app-categories',

@@ -1,14 +1,15 @@
 import { Injectable, signal } from '@angular/core';
 import { nanoid } from 'nanoid';
 
-import { TaskModel } from '../models/task.model';
-import { StorageService } from './storage';
+import { TaskModel } from '../../models/task.model';
+import { StorageService } from '../storage/storage-service';
 
 const TASKS_KEY = 'tasks';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class TasksService {
-
   private _tasks = signal<TaskModel[]>([]);
   tasks = this._tasks.asReadonly();
 
@@ -76,6 +77,5 @@ export class TasksService {
     this._tasks.set(updated);
     await this.storage.set(TASKS_KEY, updated);
   }
-
 
 }
