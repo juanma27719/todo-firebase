@@ -14,6 +14,7 @@ import {
   IonInput,
   IonButtons,
   ModalController,
+  ToastController,
   IonIcon,
   IonModal
 } from '@ionic/angular/standalone';
@@ -53,12 +54,13 @@ export class CategoriesPage {
   categories = this.categoriesService.categories;
 
   // edit category
-   editingCategoryId = signal<string | null>(null);
-   newCategoryEdit = signal('');
+  editingCategoryId = signal<string | null>(null);
+  newCategoryEdit = signal('');
 
   constructor(
     private categoriesService: CategoriesService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private toastController: ToastController
   ) {
     addIcons({ createOutline, trash });
   }
@@ -66,11 +68,14 @@ export class CategoriesPage {
   addCategory() {
     if (!this.newCategory().trim()) return;
     this.categoriesService.addCategory(this.newCategory());
+    this.presentToast(`Category create: ${this.newCategory()}`, 2000, 'bottom');
     this.newCategory.set('');
   }
 
   deleteCategory(id: string) {
     this.categoriesService.deleteCategory(id);
+    this.presentToast(`Category delete`, 2000, 'bottom');
+
   }
 
   editCategory(category: CategoryModel) {
@@ -88,6 +93,16 @@ export class CategoriesPage {
     return c.id;
   }
 
+  async presentToast(message: string, duration: number, position: 'top' | 'middle' | 'bottom') {
+    const toast = await this.toastController.create({
+      message,
+      duration,
+      position,
+    });
+
+    await toast.present();
+  }
+
   // actions to edit category
   cancel() {
     this.modal.dismiss(null, 'cancel');
@@ -102,6 +117,7 @@ export class CategoriesPage {
       id: this.newCategoryEdit()
     });
 
+    this.presentToast(`Category update: ${this.newCategoryEdit()}`, 2000, 'bottom');
     this.modal.dismiss();
   }
 }

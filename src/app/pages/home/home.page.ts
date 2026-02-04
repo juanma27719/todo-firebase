@@ -5,7 +5,27 @@ import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { createOutline, trash, duplicateOutline } from 'ionicons/icons';
 
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonCheckbox, IonButton, IonList, IonLabel, IonSelect, IonSelectOption, IonInput, IonSegment, IonSegmentButton, IonButtons, ModalController, IonIcon, IonModal } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonItem,
+  IonCheckbox,
+  IonButton,
+  IonList,
+  IonLabel,
+  IonSelect,
+  IonSelectOption,
+  IonInput,
+  IonSegment,
+  IonSegmentButton,
+  IonButtons,
+  ModalController,
+  ToastController,
+  IonIcon,
+  IonModal
+} from '@ionic/angular/standalone';
 
 import { TasksService } from '../../core/services/tasks';
 import { CategoriesService } from '../../core/services/categories';
@@ -61,7 +81,8 @@ export class HomePage {
   constructor(
     private tasksService: TasksService,
     private categoriesService: CategoriesService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private toastController: ToastController
   ) {
     addIcons({ createOutline, trash, duplicateOutline });
   }
@@ -74,8 +95,11 @@ export class HomePage {
       this.selectedCategory()
     );
 
+    this.presentToast(`Task create: ${this.newTask()}`, 2000, 'bottom');
+
     this.newTask.set('');
     this.selectedCategory.set(undefined);
+
   }
 
   toggleTask(id: string) {
@@ -84,6 +108,7 @@ export class HomePage {
 
   deleteTask(id: string) {
     this.tasksService.deleteTask(id);
+    this.presentToast(`Task delete`, 2000, 'bottom');
   }
 
   editTask(task: TaskModel) {
@@ -93,6 +118,7 @@ export class HomePage {
 
     this.modal.present();
   }
+
   async openModalCategories() {
     const modal = await this.modalController.create({
       component: CategoriesPage
@@ -112,6 +138,16 @@ export class HomePage {
     }
   }
 
+  async presentToast(message: string, duration: number, position: 'top' | 'middle' | 'bottom') {
+    const toast = await this.toastController.create({
+      message,
+      duration,
+      position,
+    });
+
+    await toast.present();
+  }
+
   // actions to edit task
   cancel() {
     this.modal.dismiss(null, 'cancel');
@@ -126,6 +162,7 @@ export class HomePage {
       categoryId: this.selectedCategoryEdit()
     });
 
+    this.presentToast(`Task update: ${this.newTaskEdit()}`, 2000, 'bottom');
     this.modal.dismiss();
   }
 
