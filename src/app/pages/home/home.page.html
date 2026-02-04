@@ -26,7 +26,7 @@
     </ion-select>
   </ion-item>
 
-  <ion-button expand="block" (click)="addTask()" [disabled]="!newTask().trim() || !selectedCategory">
+  <ion-button expand="block" (click)="addTask()" [disabled]="!newTask().trim() || !selectedCategory()">
     Add Task
   </ion-button>
 
@@ -50,7 +50,6 @@
   }
 
   <!-- Lista -->
-
   <ion-list>
     @if (filteredTasks().length > 0) {
     <ion-item *ngFor="let task of filteredTasks(); trackBy: trackById">
@@ -62,12 +61,12 @@
         {{ task.title }} - {{task.categoryId}}
       </ion-label>
 
-      <ion-button fill="clear" color="primary" (click)="editTask(task.id)">
+      <ion-button fill="clear" color="primary" (click)="editTask(task)">
         <ion-icon name="create-outline"></ion-icon>
       </ion-button>
 
       <ion-button fill="clear" color="danger" (click)="deleteTask(task.id)">
-          <ion-icon slot="end" name="trash"></ion-icon>
+        <ion-icon slot="end" name="trash"></ion-icon>
       </ion-button>
 
 
@@ -79,5 +78,45 @@
     </ion-item>
     }
   </ion-list>
+
+  <!-- Modal editar categoria -->
+  <ion-modal #modal backdropDismiss="false" [initialBreakpoint]="0.5" [breakpoints]="[0, 0.25, 0.5, 0.75]">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">Cancel</ion-button>
+          </ion-buttons>
+          <ion-title>Edit Task</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirm()" [strong]="true"
+              [disabled]="!newTaskEdit().trim() || !selectedCategoryEdit()">Confirm</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+
+        <ion-item>
+          <ion-input [value]="newTaskEdit()" (ionInput)="newTaskEdit.set($event.detail.value!)">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-select [value]="selectedCategoryEdit()" (ionChange)="selectedCategoryEdit.set($event.detail.value)">
+            <ion-select-option *ngFor="let c of categories()" [value]="c.id">
+              {{ c.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-button expand="block" (click)="addTask()" [disabled]="!newTaskEdit().trim() || !selectedCategoryEdit()">
+          Edit Task
+        </ion-button>
+
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
 
 </ion-content>

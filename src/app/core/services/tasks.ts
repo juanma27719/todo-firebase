@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Task } from '../models/task.model';
+import { TaskModel } from '../models/task.model';
 import { StorageService } from './storage';
 
 const TASKS_KEY = 'tasks';
@@ -7,7 +7,7 @@ const TASKS_KEY = 'tasks';
 @Injectable({ providedIn: 'root' })
 export class TasksService {
 
-  private _tasks = signal<Task[]>([]);
+  private _tasks = signal<TaskModel[]>([]);
   tasks = this._tasks.asReadonly();
 
   constructor(private storage: StorageService) {
@@ -15,12 +15,12 @@ export class TasksService {
   }
 
   async loadTasks() {
-    const tasks = (await this.storage.get<Task[]>(TASKS_KEY)) || [];
+    const tasks = (await this.storage.get<TaskModel[]>(TASKS_KEY)) || [];
     this._tasks.set(tasks);
   }
 
   async addTask(title: string, categoryId?: string) {
-    const task: Task = {
+    const task: TaskModel = {
       id: crypto.randomUUID(),
       title,
       completed: false,
@@ -46,4 +46,13 @@ export class TasksService {
     this._tasks.set(updated);
     await this.storage.set(TASKS_KEY, updated);
   }
+
+  async updateTask(id: string, data: Partial<TaskModel>) {
+    const updated = this.tasks().map(t =>
+      t.id === id ? { ...t, ...data } : t
+    );
+    this._tasks.set(updated);
+    await this.storage.set('tasks', updated);
+  }
+
 }

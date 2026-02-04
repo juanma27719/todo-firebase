@@ -1,32 +1,16 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { addIcons } from 'ionicons';
 import { createOutline, trash, duplicateOutline } from 'ionicons/icons';
 
-
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonItem,
-  IonCheckbox,
-  IonButton,
-  IonList,
-  IonLabel,
-  IonSelect,
-  IonSelectOption,
-  IonInput,
-  IonSegment,
-  IonSegmentButton,
-  IonButtons,
-  ModalController, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonCheckbox, IonButton, IonList, IonLabel, IonSelect, IonSelectOption, IonInput, IonSegment, IonSegmentButton, IonButtons, ModalController, IonIcon, IonModal } from '@ionic/angular/standalone';
 
 import { TasksService } from '../../core/services/tasks';
 import { CategoriesService } from '../../core/services/categories';
 import { CategoriesPage } from '../categories/categories.page';
+import { TaskModel } from '../../core/models/task.model';
 
 @Component({
   selector: 'app-home',
@@ -50,14 +34,20 @@ import { CategoriesPage } from '../categories/categories.page';
     IonInput,
     IonSegment,
     IonSegmentButton,
-    IonButtons
-  ]
+    IonButtons, IonModal]
 })
 export class HomePage {
+
+  @ViewChild(IonModal) modal!: IonModal;
 
   newTask = signal('');
   selectedCategory = signal<string | undefined>(undefined);
   filterCategory = signal<string | undefined>(undefined);
+
+  // edit task
+  editingTaskId = signal<string | null>(null);
+  selectedCategoryEdit = signal<string | undefined>(undefined);
+  newTaskEdit = signal('');
 
   tasks = this.tasksService.tasks;
   categories = this.categoriesService.categories;
@@ -74,7 +64,7 @@ export class HomePage {
     private modalController: ModalController
   ) {
     addIcons({ createOutline, trash, duplicateOutline });
-   }
+  }
 
   addTask() {
     if (!this.newTask().trim()) return;
@@ -96,9 +86,14 @@ export class HomePage {
     this.tasksService.deleteTask(id);
   }
 
-  editTask(id: string){
-    console.log("Edirt")
+  editTask(task: TaskModel) {
+    this.editingTaskId.set(task.id);
+    this.newTaskEdit.set(task.title);
+    this.selectedCategoryEdit.set(task.categoryId);
+
+    this.modal.present();
   }
+
 
   async openModalCategories() {
     const modal = await this.modalController.create({
@@ -118,5 +113,23 @@ export class HomePage {
       this.filterCategory.set(undefined);
     }
   }
+
+  // actions to edit task
+  cancel() {
+    this.modal.dismiss(null, 'cancel');
+  }
+
+  confirm() {
+    const id = this.editingTaskId();
+    if (!id) return;
+
+    this.tasksService.updateTask(id, {
+      title: this.newTaskEdit(),
+      categoryId: this.selectedCategoryEdit()
+    });
+
+    this.modal.dismiss();
+  }
+
 
 }
