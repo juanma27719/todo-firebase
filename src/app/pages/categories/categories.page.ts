@@ -54,7 +54,6 @@ export class CategoriesPage {
   newCategory = signal('');
   categories = this.categoriesService.categories;
 
-  // edit category
   editingCategoryId = signal<string | null>(null);
   newCategoryEdit = signal('');
 
@@ -126,7 +125,6 @@ export class CategoriesPage {
     await toast.present();
   }
 
-  // actions to edit category
   cancel() {
     this.modal.dismiss(null, 'cancel');
   }

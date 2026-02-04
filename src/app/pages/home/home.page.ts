@@ -65,7 +65,6 @@ export class HomePage {
   selectedCategory = signal<string | undefined>(undefined);
   filterCategory = signal<string | undefined>(undefined);
 
-  // edit task
   editingTaskId = signal<string | null>(null);
   selectedCategoryEdit = signal<string | undefined>(undefined);
   newTaskEdit = signal('');
@@ -172,7 +171,6 @@ export class HomePage {
     await toast.present();
   }
 
-  // actions to edit task
   cancel() {
     this.modal.dismiss(null, 'cancel');
   }
