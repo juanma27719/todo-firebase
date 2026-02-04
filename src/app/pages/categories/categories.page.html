@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Categorías</ion-title>
+    <ion-title>Categories</ion-title>
     <ion-buttons slot="end">
-      <ion-button id="open-modal-category" (click)="dismiss()">Cancelar</ion-button>
+      <ion-button id="open-modal-category" (click)="dismiss()">Cancel</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -11,12 +11,12 @@
 
   <!-- Nueva categoría -->
   <ion-item>
-    <ion-input [(ngModel)]="newCategory" placeholder="Nueva categoría">
+    <ion-input [(ngModel)]="newCategory" placeholder="New category">
     </ion-input>
   </ion-item>
 
   <ion-button expand="block" (click)="addCategory()" [disabled]="!newCategory">
-    Agregar Categoría
+    Add Category
   </ion-button>
 
   <!-- Lista Categorias -->
@@ -26,7 +26,7 @@
       <ion-label>{{ c.name }}</ion-label>
 
       <ion-button fill="clear" color="danger" (click)="deleteCategory(c.id)">
-        Eliminar
+        Delete
       </ion-button>
     </ion-item>
     }

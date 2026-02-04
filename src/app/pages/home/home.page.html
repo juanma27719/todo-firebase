@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>To-Do</ion-title>
     <ion-buttons slot="end">
-      <ion-button id="open-modal-category" (click)="openModalCategories()">Categorías</ion-button>
+      <ion-button id="open-modal-category" (click)="openModalCategories()">Add</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -11,13 +11,13 @@
 
   <!-- Nueva tarea -->
   <ion-item>
-    <ion-input [(ngModel)]="newTask" placeholder="Nueva tarea">
+    <ion-input [(ngModel)]="newTask" placeholder="New task">
     </ion-input>
   </ion-item>
 
   <!-- Categoría -->
   <ion-item>
-    <ion-select placeholder="Categoría" [(ngModel)]="selectedCategory">
+    <ion-select placeholder="Category" [(ngModel)]="selectedCategory">
       <ion-select-option *ngFor="let c of categories$ | async" [value]="c.id">
         {{ c.name }}
       </ion-select-option>
@@ -25,22 +25,25 @@
   </ion-item>
 
   <ion-button expand="block" (click)="addTask()" [disabled]="!newTask.trim() || !selectedCategory">
-    Agregar tarea
+    Add Task
   </ion-button>
 
   <!-- Filtro -->
+  @if(true){
   <ion-segment [(ngModel)]="filterCategory">
     <ion-segment-button value="">
-      Todas
+      All
     </ion-segment-button>
     <ion-segment-button *ngFor="let c of categories$ | async" [value]="c.id">
       {{ c.name }}
     </ion-segment-button>
   </ion-segment>
+  }
 
   <!-- Lista -->
   <ion-list>
     <ion-item *ngFor="let task of filteredTasks$ | async; trackBy: trackById">
+
       <ion-checkbox slot="start" [checked]="task.completed" (ionChange)="toggleTask(task.id)">
       </ion-checkbox>
 
@@ -49,8 +52,9 @@
       </ion-label>
 
       <ion-button fill="clear" color="danger" (click)="deleteTask(task.id)">
-        Eliminar
+        Delete
       </ion-button>
+
     </ion-item>
   </ion-list>
 
