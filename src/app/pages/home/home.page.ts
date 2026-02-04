@@ -93,8 +93,6 @@ export class HomePage {
 
     this.modal.present();
   }
-
-
   async openModalCategories() {
     const modal = await this.modalController.create({
       component: CategoriesPage

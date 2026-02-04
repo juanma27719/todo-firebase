@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Category } from '../models/category.model';
+import { CategoryModel } from '../models/category.model';
 import { StorageService } from './storage';
 
 const CATEGORIES_KEY = 'categories';
@@ -7,7 +7,7 @@ const CATEGORIES_KEY = 'categories';
 @Injectable({ providedIn: 'root' })
 export class CategoriesService {
 
-  private _categories = signal<Category[]>([]);
+  private _categories = signal<CategoryModel[]>([]);
   categories = this._categories.asReadonly();
 
   constructor(private storage: StorageService) {
@@ -16,12 +16,12 @@ export class CategoriesService {
 
   async loadCategories() {
     const categories =
-      (await this.storage.get<Category[]>(CATEGORIES_KEY)) || [];
+      (await this.storage.get<CategoryModel[]>(CATEGORIES_KEY)) || [];
     this._categories.set(categories);
   }
 
   async addCategory(name: string) {
-    const category: Category = {
+    const category: CategoryModel = {
       id: name,
       name
     };
@@ -33,6 +33,14 @@ export class CategoriesService {
 
   async deleteCategory(id: string) {
     const updated = this._categories().filter(c => c.id !== id);
+    this._categories.set(updated);
+    await this.storage.set(CATEGORIES_KEY, updated);
+  }
+
+  async updateCategory(id: string, data: Partial<CategoryModel>) {
+    const updated = this.categories().map(t =>
+      t.id === id ? { ...t, ...data } : t
+    );
     this._categories.set(updated);
     await this.storage.set(CATEGORIES_KEY, updated);
   }

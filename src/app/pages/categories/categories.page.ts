@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -13,12 +13,15 @@ import {
   IonLabel,
   IonInput,
   IonButtons,
-  ModalController, IonIcon
+  ModalController,
+  IonIcon,
+  IonModal
 } from '@ionic/angular/standalone';
 
 import { CategoriesService } from '../../core/services/categories';
 import { addIcons } from 'ionicons';
 import { createOutline, trash } from 'ionicons/icons';
+import { CategoryModel } from 'src/app/core/models/category.model';
 
 @Component({
   selector: 'app-categories',
@@ -38,15 +41,20 @@ import { createOutline, trash } from 'ionicons/icons';
     IonButton,
     IonList,
     IonLabel,
-    IonIcon
+    IonIcon,
+    IonModal
   ]
 })
 export class CategoriesPage {
 
+  @ViewChild(IonModal) modal!: IonModal;
 
   newCategory = signal('');
-
   categories = this.categoriesService.categories;
+
+  // edit category
+   editingCategoryId = signal<string | null>(null);
+   newCategoryEdit = signal('');
 
   constructor(
     private categoriesService: CategoriesService,
@@ -65,8 +73,11 @@ export class CategoriesPage {
     this.categoriesService.deleteCategory(id);
   }
 
-  editCategory(id: string) {
-    // this.categoriesService.deleteCategory(id);
+  editCategory(category: CategoryModel) {
+    this.editingCategoryId.set(category.id);
+    this.newCategoryEdit.set(category.name);
+
+    this.modal.present();
   }
 
   dismiss() {
@@ -75,5 +86,22 @@ export class CategoriesPage {
 
   trackById(_: number, c: any) {
     return c.id;
+  }
+
+  // actions to edit category
+  cancel() {
+    this.modal.dismiss(null, 'cancel');
+  }
+
+  confirm() {
+    const id = this.editingCategoryId();
+    if (!id) return;
+
+    this.categoriesService.updateCategory(id, {
+      name: this.newCategoryEdit(),
+      id: this.newCategoryEdit()
+    });
+
+    this.modal.dismiss();
   }
 }

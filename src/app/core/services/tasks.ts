@@ -52,7 +52,7 @@ export class TasksService {
       t.id === id ? { ...t, ...data } : t
     );
     this._tasks.set(updated);
-    await this.storage.set('tasks', updated);
+    await this.storage.set(TASKS_KEY, updated);
   }
 
 }
