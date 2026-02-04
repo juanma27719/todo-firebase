@@ -1,4 +1,6 @@
 import { Injectable, signal } from '@angular/core';
+import { nanoid } from 'nanoid';
+
 import { TaskModel } from '../models/task.model';
 import { StorageService } from './storage';
 
@@ -21,7 +23,7 @@ export class TasksService {
 
   async addTask(title: string, categoryId?: string) {
     const task: TaskModel = {
-      id: crypto.randomUUID(),
+      id: nanoid(),
       title,
       completed: false,
       categoryId,
@@ -54,5 +56,26 @@ export class TasksService {
     this._tasks.set(updated);
     await this.storage.set(TASKS_KEY, updated);
   }
+
+  async updateTasksCategory(oldCategoryId: string, newCategoryId: string) {
+    const updated = this._tasks().map(t =>
+      t.categoryId === oldCategoryId
+        ? { ...t, categoryId: newCategoryId }
+        : t
+    );
+
+    this._tasks.set(updated);
+    await this.storage.set(TASKS_KEY, updated);
+  }
+
+  async deleteTasksByCategory(categoryId: string) {
+    const updated = this._tasks().filter(
+      t => t.categoryId !== categoryId
+    );
+
+    this._tasks.set(updated);
+    await this.storage.set(TASKS_KEY, updated);
+  }
+
 
 }

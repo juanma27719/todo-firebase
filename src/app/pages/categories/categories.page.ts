@@ -22,7 +22,7 @@ import {
 import { CategoriesService } from '../../core/services/categories';
 import { addIcons } from 'ionicons';
 import { createOutline, trash } from 'ionicons/icons';
-import { CategoryModel } from 'src/app/core/models/category.model';
+import { CategoryModel } from '../../core/models/category.model';
 
 @Component({
   selector: 'app-categories',

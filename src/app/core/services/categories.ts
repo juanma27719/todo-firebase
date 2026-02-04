@@ -1,6 +1,9 @@
 import { Injectable, signal } from '@angular/core';
+import { nanoid } from 'nanoid';
+
 import { CategoryModel } from '../models/category.model';
 import { StorageService } from './storage';
+import { TasksService } from './tasks';
 
 const CATEGORIES_KEY = 'categories';
 
@@ -10,7 +13,7 @@ export class CategoriesService {
   private _categories = signal<CategoryModel[]>([]);
   categories = this._categories.asReadonly();
 
-  constructor(private storage: StorageService) {
+  constructor(private storage: StorageService, private tasksService: TasksService) {
     this.loadCategories();
   }
 
@@ -22,7 +25,7 @@ export class CategoriesService {
 
   async addCategory(name: string) {
     const category: CategoryModel = {
-      id: name,
+      id: nanoid(),
       name
     };
 
@@ -35,13 +38,21 @@ export class CategoriesService {
     const updated = this._categories().filter(c => c.id !== id);
     this._categories.set(updated);
     await this.storage.set(CATEGORIES_KEY, updated);
+    await this.tasksService.deleteTasksByCategory(id);
   }
 
+
   async updateCategory(id: string, data: Partial<CategoryModel>) {
-    const updated = this.categories().map(t =>
-      t.id === id ? { ...t, ...data } : t
+    const updated = this.categories().map(c =>
+      c.id === id ? { ...c, ...data } : c
     );
+
     this._categories.set(updated);
     await this.storage.set(CATEGORIES_KEY, updated);
+
+    if (data.id && data.id !== id) {
+      await this.tasksService.updateTasksCategory(id, data.id);
+    }
   }
+
 }
