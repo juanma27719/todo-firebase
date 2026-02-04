@@ -13,10 +13,12 @@ import {
   IonLabel,
   IonInput,
   IonButtons,
-  ModalController
+  ModalController, IonIcon
 } from '@ionic/angular/standalone';
 
 import { CategoriesService } from '../../core/services/categories';
+import { addIcons } from 'ionicons';
+import { createOutline, trash } from 'ionicons/icons';
 
 @Component({
   selector: 'app-categories',
@@ -35,7 +37,8 @@ import { CategoriesService } from '../../core/services/categories';
     IonInput,
     IonButton,
     IonList,
-    IonLabel
+    IonLabel,
+    IonIcon
   ]
 })
 export class CategoriesPage {
@@ -48,7 +51,9 @@ export class CategoriesPage {
   constructor(
     private categoriesService: CategoriesService,
     private modalController: ModalController
-  ) {}
+  ) {
+    addIcons({ createOutline, trash });
+  }
 
   addCategory() {
     if (!this.newCategory().trim()) return;
@@ -58,6 +63,10 @@ export class CategoriesPage {
 
   deleteCategory(id: string) {
     this.categoriesService.deleteCategory(id);
+  }
+
+  editCategory(id: string) {
+    // this.categoriesService.deleteCategory(id);
   }
 
   dismiss() {

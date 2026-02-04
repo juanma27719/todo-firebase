@@ -2,7 +2,9 @@
   <ion-toolbar>
     <ion-title>To-Do</ion-title>
     <ion-buttons slot="end">
-      <ion-button id="open-modal-category" (click)="openModalCategories()">Add</ion-button>
+      <ion-button id="open-modal-category" (click)="openModalCategories()">
+        <ion-icon name="duplicate-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -60,9 +62,14 @@
         {{ task.title }} - {{task.categoryId}}
       </ion-label>
 
-      <ion-button fill="clear" color="danger" (click)="deleteTask(task.id)">
-        Delete
+      <ion-button fill="clear" color="primary" (click)="editTask(task.id)">
+        <ion-icon name="create-outline"></ion-icon>
       </ion-button>
+
+      <ion-button fill="clear" color="danger" (click)="deleteTask(task.id)">
+          <ion-icon slot="end" name="trash"></ion-icon>
+      </ion-button>
+
 
     </ion-item>
     }

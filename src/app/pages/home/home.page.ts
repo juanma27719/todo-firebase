@@ -2,6 +2,10 @@ import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { addIcons } from 'ionicons';
+import { createOutline, trash, duplicateOutline } from 'ionicons/icons';
+
+
 import {
   IonContent,
   IonHeader,
@@ -18,8 +22,7 @@ import {
   IonSegment,
   IonSegmentButton,
   IonButtons,
-  ModalController
-} from '@ionic/angular/standalone';
+  ModalController, IonIcon } from '@ionic/angular/standalone';
 
 import { TasksService } from '../../core/services/tasks';
 import { CategoriesService } from '../../core/services/categories';
@@ -30,7 +33,7 @@ import { CategoriesPage } from '../categories/categories.page';
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonIcon,
     CommonModule,
     FormsModule,
     IonContent,
@@ -69,7 +72,9 @@ export class HomePage {
     private tasksService: TasksService,
     private categoriesService: CategoriesService,
     private modalController: ModalController
-  ) { }
+  ) {
+    addIcons({ createOutline, trash, duplicateOutline });
+   }
 
   addTask() {
     if (!this.newTask().trim()) return;
@@ -89,6 +94,10 @@ export class HomePage {
 
   deleteTask(id: string) {
     this.tasksService.deleteTask(id);
+  }
+
+  editTask(id: string){
+    console.log("Edirt")
   }
 
   async openModalCategories() {

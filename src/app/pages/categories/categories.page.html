@@ -26,8 +26,12 @@
     <ion-item>
       <ion-label>{{ c.name }}</ion-label>
 
+      <ion-button fill="clear" color="primary" (click)="editCategory(c.id)">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+
       <ion-button fill="clear" color="danger" (click)="deleteCategory(c.id)">
-        Delete
+        <ion-icon name="trash"></ion-icon>
       </ion-button>
     </ion-item>
     }
