@@ -23,6 +23,7 @@ import {
   IonButtons,
   ModalController,
   ToastController,
+  AlertController,
   IonIcon,
   IonModal
 } from '@ionic/angular/standalone';
@@ -82,7 +83,8 @@ export class HomePage {
     private tasksService: TasksService,
     private categoriesService: CategoriesService,
     private modalController: ModalController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private alertController: AlertController
   ) {
     addIcons({ createOutline, trash, duplicateOutline });
   }
@@ -104,6 +106,28 @@ export class HomePage {
 
   toggleTask(id: string) {
     this.tasksService.toggleTask(id);
+  }
+
+  async confirmDeleteCategory(id: string, name: string) {
+    const alert = await this.alertController.create({
+      header: 'Delete task',
+      message: `Are you sure you want to delete ${name}?`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: async () => {
+            this.deleteTask(id);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   deleteTask(id: string) {

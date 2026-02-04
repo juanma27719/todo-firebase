@@ -15,6 +15,7 @@ import {
   IonButtons,
   ModalController,
   ToastController,
+  AlertController,
   IonIcon,
   IonModal
 } from '@ionic/angular/standalone';
@@ -60,7 +61,8 @@ export class CategoriesPage {
   constructor(
     private categoriesService: CategoriesService,
     private modalController: ModalController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private alertController: AlertController
   ) {
     addIcons({ createOutline, trash });
   }
@@ -72,10 +74,31 @@ export class CategoriesPage {
     this.newCategory.set('');
   }
 
+  async confirmDeleteCategory(id: string, name: string) {
+    const alert = await this.alertController.create({
+      header: 'Delete category',
+      message: `Are you sure you want to delete ${name}?`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: async () => {
+            this.deleteCategory(id);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   deleteCategory(id: string) {
     this.categoriesService.deleteCategory(id);
     this.presentToast(`Category delete`, 2000, 'bottom');
-
   }
 
   editCategory(category: CategoryModel) {
