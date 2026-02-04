@@ -1,7 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonButton, IonList, IonLabel, IonInput, IonButtons, ModalController } from '@ionic/angular/standalone';
+
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonItem,
+  IonButton,
+  IonList,
+  IonLabel,
+  IonInput,
+  IonButtons,
+  ModalController
+} from '@ionic/angular/standalone';
+
 import { CategoriesService } from '../../core/services/categories';
 
 @Component({
@@ -10,9 +24,9 @@ import { CategoriesService } from '../../core/services/categories';
   styleUrls: ['./categories.page.scss'],
   standalone: true,
   imports: [
-    IonButtons,
     CommonModule,
     FormsModule,
+    IonButtons,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -26,30 +40,31 @@ import { CategoriesService } from '../../core/services/categories';
 })
 export class CategoriesPage {
 
-  categories$ = this.categoriesService.getCategories();
-  newCategory = '';
 
-  constructor(private categoriesService: CategoriesService,
-    private modalController: ModalController) { }
+  newCategory = signal('');
+
+  categories = this.categoriesService.categories;
+
+  constructor(
+    private categoriesService: CategoriesService,
+    private modalController: ModalController
+  ) {}
 
   addCategory() {
-    if (!this.newCategory.trim()) return;
-    this.categoriesService.addCategory(this.newCategory);
-    this.newCategory = '';
-    this.dismiss();
+    if (!this.newCategory().trim()) return;
+    this.categoriesService.addCategory(this.newCategory());
+    this.newCategory.set('');
   }
 
   deleteCategory(id: string) {
     this.categoriesService.deleteCategory(id);
   }
 
-  trackById(_: number, c: any) {
-    return c.id;
-  }
-
   dismiss() {
     this.modalController.dismiss();
   }
 
-
+  trackById(_: number, c: any) {
+    return c.id;
+  }
 }

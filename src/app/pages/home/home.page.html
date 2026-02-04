@@ -18,31 +18,40 @@
   <!-- Categoría -->
   <ion-item>
     <ion-select placeholder="Category" [(ngModel)]="selectedCategory">
-      <ion-select-option *ngFor="let c of categories$ | async" [value]="c.id">
+      <ion-select-option *ngFor="let c of categories()" [value]="c.id">
         {{ c.name }}
       </ion-select-option>
     </ion-select>
   </ion-item>
 
-  <ion-button expand="block" (click)="addTask()" [disabled]="!newTask.trim() || !selectedCategory">
+  <ion-button expand="block" (click)="addTask()" [disabled]="!newTask().trim() || !selectedCategory">
     Add Task
   </ion-button>
 
   <!-- Filtro -->
-  @if(true){
-  <ion-segment [(ngModel)]="filterCategory">
+  @if (tasks().length > 0) {
+  <ion-segment scrollable="true" [value]="filterCategory() ?? ''" (ionChange)="onFilterChange($event.detail.value)">
     <ion-segment-button value="">
       All
     </ion-segment-button>
-    <ion-segment-button *ngFor="let c of categories$ | async" [value]="c.id">
+
+    <ion-segment-button *ngFor="let c of categories()" [value]="c.id">
       {{ c.name }}
     </ion-segment-button>
+
   </ion-segment>
+  }
+  @if (tasks().length === 0) {
+  <ion-item>
+    <ion-label color="defaul">Not records</ion-label>
+  </ion-item>
   }
 
   <!-- Lista -->
+
   <ion-list>
-    <ion-item *ngFor="let task of filteredTasks$ | async; trackBy: trackById">
+    @if (filteredTasks().length > 0) {
+    <ion-item *ngFor="let task of filteredTasks(); trackBy: trackById">
 
       <ion-checkbox slot="start" [checked]="task.completed" (ionChange)="toggleTask(task.id)">
       </ion-checkbox>
@@ -56,6 +65,12 @@
       </ion-button>
 
     </ion-item>
+    }
+    @if (filteredTasks().length === 0) {
+    <ion-item>
+      <ion-label color="defaul">Not records</ion-label>
+    </ion-item>
+    }
   </ion-list>
 
 </ion-content>

@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { combineLatest, map } from 'rxjs';
 
 import {
   IonContent,
@@ -17,8 +16,10 @@ import {
   IonSelectOption,
   IonInput,
   IonSegment,
-  IonSegmentButton, IonButtons, IonModal, ModalController } from '@ionic/angular/standalone';
-
+  IonSegmentButton,
+  IonButtons,
+  ModalController
+} from '@ionic/angular/standalone';
 
 import { TasksService } from '../../core/services/tasks';
 import { CategoriesService } from '../../core/services/categories';
@@ -30,18 +31,39 @@ import { CategoriesPage } from '../categories/categories.page';
   styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [
-    IonSegmentButton, IonLabel, IonList, IonButton, IonCheckbox,
-    IonItem, IonContent, IonHeader, IonTitle, IonToolbar,
-    CommonModule, FormsModule, IonSelectOption, IonSelect, IonInput, IonSegment, IonButtons]
+    CommonModule,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonItem,
+    IonCheckbox,
+    IonButton,
+    IonList,
+    IonLabel,
+    IonSelect,
+    IonSelectOption,
+    IonInput,
+    IonSegment,
+    IonSegmentButton,
+    IonButtons
+  ]
 })
 export class HomePage {
 
-  newTask = '';
-  tasks$ = this.tasksService.getTasks();
+  newTask = signal('');
+  selectedCategory = signal<string | undefined>(undefined);
+  filterCategory = signal<string | undefined>(undefined);
 
-  categories$ = this.categoriesService.getCategories();
-  selectedCategory?: string;
-  filterCategory?: string;
+  tasks = this.tasksService.tasks;
+  categories = this.categoriesService.categories;
+
+  filteredTasks = computed(() => {
+    const filter = this.filterCategory();
+    if (!filter) return this.tasks();
+    return this.tasks().filter(t => t.categoryId === filter);
+  });
 
   constructor(
     private tasksService: TasksService,
@@ -50,14 +72,15 @@ export class HomePage {
   ) { }
 
   addTask() {
-    if (!this.newTask.trim()) return;
-    this.tasksService.addTask(this.newTask, this.selectedCategory);
-    this.newTask = '';
-    this.selectedCategory = undefined;
-  }
+    if (!this.newTask().trim()) return;
 
-  trackById(_: number, task: any) {
-    return task.id;
+    this.tasksService.addTask(
+      this.newTask(),
+      this.selectedCategory()
+    );
+
+    this.newTask.set('');
+    this.selectedCategory.set(undefined);
   }
 
   toggleTask(id: string) {
@@ -68,22 +91,23 @@ export class HomePage {
     this.tasksService.deleteTask(id);
   }
 
-  async openModalCategories(){
-    console.log("open modal")
+  async openModalCategories() {
     const modal = await this.modalController.create({
       component: CategoriesPage
     });
-    modal.present();
+    await modal.present();
   }
-  filteredTasks$ = combineLatest([
-    this.tasksService.getTasks(),
-    this.categoriesService.getCategories()
-  ]).pipe(
-    map(([tasks]) => {
-      if (!this.filterCategory) return tasks;
-      return tasks.filter(t => t.categoryId === this.filterCategory);
-    })
-  );
 
+  trackById(_: number, task: any) {
+    return task.id;
+  }
+
+  onFilterChange(value: string | number | null | undefined) {
+    if (typeof value === 'string' && value !== '') {
+      this.filterCategory.set(value);
+    } else {
+      this.filterCategory.set(undefined);
+    }
+  }
 
 }

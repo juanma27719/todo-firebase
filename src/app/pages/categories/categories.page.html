@@ -15,13 +15,14 @@
     </ion-input>
   </ion-item>
 
-  <ion-button expand="block" (click)="addCategory()" [disabled]="!newCategory">
+  <ion-button expand="block" (click)="addCategory()" [disabled]="!newCategory()">
     Add Category
   </ion-button>
 
   <!-- Lista Categorias -->
+  @if (categories().length > 0) {
   <ion-list>
-    @for (c of categories$ | async; track c.id) {
+    @for (c of categories(); track c.id) {
     <ion-item>
       <ion-label>{{ c.name }}</ion-label>
 
@@ -31,5 +32,12 @@
     </ion-item>
     }
   </ion-list>
+  }
+
+  @if (categories().length === 0) {
+  <ion-item>
+    <ion-label color="defaul">Not records</ion-label>
+  </ion-item>
+  }
 
 </ion-content>
