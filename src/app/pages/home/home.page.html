@@ -3,7 +3,7 @@
     <ion-title>To-Do</ion-title>
     <ion-buttons slot="end">
       <ion-button id="open-modal-category" (click)="openModalCategories()">
-        <ion-icon name="duplicate-outline"></ion-icon>
+        <ion-icon slot="icon-only" name="duplicate-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -61,14 +61,15 @@
         {{ task.title }}
       </ion-label>
 
+      @if(canEdit()){
       <ion-button fill="clear" color="primary" (click)="editTask(task)">
-        <ion-icon name="create-outline"></ion-icon>
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
       </ion-button>
+      }
 
       <ion-button fill="clear" color="danger" (click)="confirmDeleteCategory(task.id, task.title)">
-        <ion-icon slot="end" name="trash"></ion-icon>
+        <ion-icon slot="icon-only" slot="end" name="trash"></ion-icon>
       </ion-button>
-
 
     </ion-item>
     }

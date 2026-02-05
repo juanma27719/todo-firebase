@@ -1,4 +1,4 @@
-import { Component, computed, signal, ViewChild } from '@angular/core';
+import { Component, computed, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -32,6 +32,7 @@ import { TasksService } from '../../core/services/tasks/tasks-service';
 import { CategoriesService } from '../../core/services/categories/categories-service';
 import { CategoriesPage } from '../categories/categories.page';
 import { TaskModel } from '../../core/models/task.model';
+import { RemoteConfigService } from '../../core/services/remote-config/remote-config-service';
 
 @Component({
   selector: 'app-home',
@@ -78,12 +79,16 @@ export class HomePage {
     return this.tasks().filter(t => t.categoryId === filter);
   });
 
+  private remoteConfigService = inject(RemoteConfigService);
+  canEdit = this.remoteConfigService.canEdit;
+
   constructor(
     private tasksService: TasksService,
     private categoriesService: CategoriesService,
     private modalController: ModalController,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+
   ) {
     addIcons({ createOutline, trash, duplicateOutline });
   }
